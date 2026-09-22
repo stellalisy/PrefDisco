@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.venv/
+
+# Credentials and generated artifacts
+src/api_info.yaml
+data/
+outputs/
+results/

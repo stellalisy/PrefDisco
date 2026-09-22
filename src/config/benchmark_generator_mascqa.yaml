@@ -1,0 +1,131 @@
+# Personalized Benchmark Generator Configuration
+
+# Dataset Configuration
+dataset:
+  name: "stellalisy/MaScQA"
+  split: "train"
+  sample_size: 100
+  problem_fields: ["question"]          # Math problem text
+  choices_field: null                  # No multiple choice options
+  answer_field: "correct_answer"               # Solution/answer in 'solution' field
+  solution_fields: null
+  image_field: null
+
+reload_keys: false
+stop_after: 144000
+
+# Persona Configuration
+personas:
+  per_problem: 50                     # Changed from 5 to 10 personas per problem
+  initial_num_personas: 100           # Changed from 20 to 100 initial personas
+  new_persona_prob: 0.0               # Changed from 0.1 to 0.0 to fix at 100 personas
+
+# Multiple LLM configuration for diversity
+llm_configs:
+  gpt:
+    model: ""
+    max_retries: 2
+    retry_delay: 10
+    max_tokens: 4096
+    temperature: 0.7
+    cache_responses: true
+    log_prompts: true
+    log_responses: true
+    random_seed: 42
+    reasoning_effort: "high"
+    model_kwargs:
+      api_info: "src/config/api_info.example.yaml"
+      api_account: "openai"
+      top_p: 0.95
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+      num_gpus: 0
+
+  gemini:
+    model: ""
+    max_retries: 2
+    retry_delay: 10
+    max_tokens: 8192
+    temperature: 0.7
+    cache_responses: true
+    log_prompts: true
+    log_responses: true
+    random_seed: 42
+    reasoning_effort: "high"
+    model_kwargs:
+      api_info: "src/config/api_info.example.yaml"
+      api_account: "gemini"
+      top_p: 0.95
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+      num_gpus: 0
+
+  claude:
+    model: ""
+    max_retries: 2
+    retry_delay: 10
+    max_tokens: 4096
+    temperature: 0.7
+    cache_responses: true
+    log_prompts: true
+    log_responses: true
+    random_seed: 42
+    reasoning_effort: "high"
+    model_kwargs:
+      api_info: "src/config/api_info.example.yaml"
+      api_account: "claude-bedrock"
+      top_p: 0.95
+      frequency_penalty: 0.0
+      presence_penalty: 0.0
+      num_gpus: 0
+
+# Legacy LLM config for backward compatibility
+llm_config:
+  model: ""
+  max_retries: 5
+  retry_delay: 30
+  max_tokens: 4096
+  temperature: 0.7
+  cache_responses: true
+  log_prompts: true
+  log_responses: true
+  random_seed: 42
+  reasoning_effort: "high"
+  model_kwargs:
+    api_info: "src/config/api_info.example.yaml"
+    api_account: "openai"
+    top_p: 0.95
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+    num_gpus: 0
+
+# Model Configuration
+model:
+  name: "multi-model"               # Updated to reflect multi-model usage
+  temperature: 0.7
+
+# File Paths
+paths:
+  output_dir: "outputs/benchmarks/mascqa"
+  output_file: "personalized_mascqa.jsonl"
+  dataset_preference_filepath: "dataset_preferences.json"
+  persona_library_filepath: "data/shared_personas/persona_library_100.json"  # Shared across tasks
+  persona_preferences_filepath: "data/shared_personas/persona_preferences.json"  # Shared across tasks
+  all_prefs_filepath: "data/shared_personas/all_preferences.json"
+
+# System Configuration
+system:
+  random_seed: 444                   # Random seed for reproducibility
+
+# Preference Generation Configuration
+preference_generation:
+  min_dimensions_per_problem: 20    # Minimum preference dimensions per problem
+  consistency_weight: 0.8           # Weight for consistency with existing preferences
+  transferability_threshold: 0.7    # Threshold for preference transferability
+
+# Evaluation Configuration
+evaluation:
+  weight_tolerance: 0.05            # Tolerance for rubric weight sum validation
+  require_exact_preference_match: true  # Whether to require exact preference matching in rubrics
+
+max_tries: 5

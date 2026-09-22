@@ -1,0 +1,93 @@
+# Configuration for Interactive Evaluation Environment
+benchmark_file: "data/benchmark/benchmark_1k/math/train.jsonl"
+output:
+  filepath: "results/math_results.jsonl"
+max_problems: 1000
+user_type:
+  # - "passive"
+  - "passive_nostop"
+  # - "collaborative"
+
+random_seed: 42
+
+evaluation:
+  # Maximum number of conversation turns before terminating
+  max_turns: 5
+
+  # Evaluation modes to test
+  modes:
+    - "no_prompt"      # Baseline: no personalization
+    - "persona_known"  # Full persona provided in system prompt
+    - "infer_persona"  # Model must ask questions to understand user
+
+  # User simulator settings
+  user_simulator:
+    termination_threshold: 0.7  # Satisfaction threshold for ending conversation
+    temperature: 0.4            # Temperature for user response generation
+
+
+# LLM configuration
+llm_config:
+  model: ""
+  max_retries: 4
+  retry_delay: 30
+  max_tokens: 8192
+  temperature: 0.7
+  cache_responses: true
+  log_prompts: true
+  log_responses: true
+  random_seed: 42
+  reasoning_effort: "low"
+  enable_thinking: false
+  model_kwargs:
+    api_info: "src/config/api_info.example.yaml"
+    api_account: "openai"
+    top_p: 0.9
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+    num_gpus: 4
+
+# Evaluator LLM configuration
+evaluator_llm_config:
+  model: ""
+  max_retries: 5
+  retry_delay: 30
+  max_tokens: 4096
+  temperature: 0.7
+  cache_responses: true
+  log_prompts: true
+  log_responses: true
+  random_seed: 42
+  reasoning_effort: "high"
+  model_kwargs:
+    api_info: "src/config/api_info.example.yaml"
+    api_account: "openai"
+    top_p: 0.95
+    frequency_penalty: 0.0
+    presence_penalty: 0.0
+    num_gpus: 0
+
+
+# Multimodal evaluation settings
+multimodal:
+  # Supported image formats
+  supported_formats: ["png", "jpg", "jpeg", "gif", "bmp"]
+
+  # Image processing
+  max_image_size: [1024, 1024]  # Max width, height in pixels
+  convert_to_rgb: true          # Convert all images to RGB format
+  compression_quality: 85       # JPEG compression quality (1-100)
+
+# Evaluation metrics
+metrics:
+  # Weight tolerance for rubric validation
+  weight_tolerance: 0.05
+
+  # Scoring scale
+  score_range: [1, 5]
+
+  # Criteria types to track
+  preference_types:
+    - "expertise"
+    - "personal"
+    - "general"

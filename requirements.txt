@@ -1,0 +1,11 @@
+backoff>=2.2,<3
+boto3>=1.35
+datasets>=3.0,<5
+google-genai>=1.0
+huggingface-hub>=0.28
+openai>=1.70
+pillow>=10
+pydantic>=2
+pyyaml>=6
+requests>=2.31
+tqdm>=4.66

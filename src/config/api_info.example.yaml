@@ -1,0 +1,22 @@
+# API keys are read from the environment when omitted here. Copy this file to
+# an ignored location such as src/api_info.yaml if you need private settings.
+
+openai:
+  api_type: openai
+  model_name: gpt-4o
+
+openai-gpt-4.1:
+  api_type: openai
+  model_name: gpt-4.1
+
+azure-openai:
+  api_type: azure
+  model_name: gpt-4o
+  api_base: https://YOUR-RESOURCE.openai.azure.com/
+  api_version: "2024-06-01"
+
+gemini:
+  model_name: gemini-2.5-flash
+
+claude-bedrock:
+  model_name: anthropic.claude-sonnet-4-20250514-v1:0
