@@ -11,6 +11,7 @@ This repository currently contains the reproducibility code for:
 - validating generated JSONL artifacts;
 - running the three PrefDisco evaluation conditions (`no_prompt`,
   `persona_known`, and `infer_persona`);
+- training and evaluating PEP (Preference Elicitation with Priors);
 - downloading the released benchmark and training artifacts.
 
 ## Setup
@@ -25,6 +26,12 @@ pip install -r requirements.txt
 
 Local Hugging Face inference additionally requires
 `pip install -r requirements-local.txt`.
+
+PEP training uses a small separate dependency set:
+
+```bash
+pip install -r requirements-pep.txt
+```
 
 Set credentials for the providers you plan to use. OpenAI-only runs need just:
 
@@ -125,6 +132,25 @@ Validation also checks that every relative image reference exists beside the
 benchmark. ScienceQA images are stored under its `images/` directory and are
 shared by all persona variants of the same visual question.
 
+## Train the PEP policy
+
+PEP learns population-level preference structure, then evaluates adaptive
+question selection on held-out problems. The launcher downloads the requested
+5K benchmark split automatically:
+
+```bash
+scripts/run_pep.sh medqa \
+  --budget 5 \
+  --train-ratio 0.9 \
+  --per-problem-max 0.10 \
+  --min-users 4 \
+  --seed 42
+```
+
+The released 5K datasets are `aime`, `commonsenseqa`, `medqa`, and
+`socialiqa`. See [`pep/README.md`](pep/README.md) for the pipeline components,
+outputs, and configuration details.
+
 ## Source datasets
 
 The generation configs cover MATH-500, AIME, CommonsenseQA, LogiQA, MaScQA,
@@ -141,4 +167,28 @@ src/config/                  generation and evaluation configs
 src/llm/                     model-provider adapters
 src/prompts/                 simulated-user prompts
 scripts/                     download, generation, evaluation, validation
+pep/                         PEP training and policy evaluation
+```
+
+## Citation
+
+BibTeX for both PrefDisco and PEP is available in
+[`CITATIONS.bib`](CITATIONS.bib).
+
+```bibtex
+@article{li2025prefdisco,
+  title   = {{PrefDisco}: Benchmarking Proactive Personalized Reasoning},
+  author  = {Li, Shuyue Stella and Bose, Avinandan and Brahman, Faeze and Du, Simon Shaolei and Koh, Pang Wei and Fazel, Maryam and Tsvetkov, Yulia},
+  journal = {arXiv preprint arXiv:2510.00177},
+  year    = {2025},
+  url     = {https://arxiv.org/abs/2510.00177}
+}
+
+@article{bose2026pep,
+  title   = {Cold-Start Personalization via Training-Free Priors from Structured World Models},
+  author  = {Bose, Avinandan and Li, Shuyue Stella and Brahman, Faeze and Koh, Pang Wei and Du, Simon Shaolei and Tsvetkov, Yulia and Fazel, Maryam and Xiao, Lin and Celikyilmaz, Asli},
+  journal = {arXiv preprint arXiv:2602.15012},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2602.15012}
+}
 ```
