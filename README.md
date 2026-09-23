@@ -38,12 +38,13 @@ the standard AWS credential environment variables. Never commit credentials.
 
 ## Download released data
 
-The canonical Hub repositories are currently private, so accepted users must
-also set `HF_TOKEN`:
+The benchmark repository is public. The training repository is currently
+private, so accepted training-data users must also set `HF_TOKEN`:
 
 ```bash
-export HF_TOKEN=...
 python scripts/download_data.py benchmark
+
+export HF_TOKEN=...
 python scripts/download_data.py training
 ```
 
@@ -119,6 +120,10 @@ Validate any generated or downloaded benchmark with:
 ```bash
 python scripts/validate_benchmark.py path/to/benchmark.jsonl
 ```
+
+Validation also checks that every relative image reference exists beside the
+benchmark. ScienceQA images are stored under its `images/` directory and are
+shared by all persona variants of the same visual question.
 
 ## Source datasets
 

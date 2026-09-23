@@ -7,6 +7,7 @@ import argparse
 import json
 from collections import Counter
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 REQUIRED_FIELDS = {
@@ -22,6 +23,11 @@ REQUIRED_FIELDS = {
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("benchmark", type=Path)
+    parser.add_argument(
+        "--skip-images",
+        action="store_true",
+        help="Do not verify relative image paths on disk.",
+    )
     args = parser.parse_args()
 
     counts: Counter[str] = Counter()
@@ -51,6 +57,17 @@ def main() -> None:
             rubric = row.get("evaluation_rubric", {})
             if not rubric.get("evaluation_criteria"):
                 errors.append(f"line {line_number}: empty evaluation rubric")
+            image = row.get("parsed_problem", {}).get("image")
+            if image in (None, ""):
+                image = row.get("original_problem", {}).get("image")
+            if image and isinstance(image, str) and not args.skip_images:
+                parsed_image = urlparse(image)
+                if not parsed_image.scheme:
+                    image_path = args.benchmark.parent / image
+                    if not image_path.is_file():
+                        errors.append(
+                            f"line {line_number}: missing image {image_path}"
+                        )
 
     print(f"Records: {sum(counts.values())}")
     print("Types: " + ", ".join(f"{key}={value}" for key, value in sorted(counts.items())))
